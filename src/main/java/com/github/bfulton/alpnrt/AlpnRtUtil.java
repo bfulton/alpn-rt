@@ -4,6 +4,10 @@ import java.io.*;
 
 class AlpnRtUtil {
     static File writeTempFile(InputStream in, String filename) {
+        return writeTempFile(in, filename, null);
+    }
+
+    static File writeTempFile(InputStream in, String filename, File dir) {
         int filenameLastDotIndex = filename.lastIndexOf('.');
         String filenamePrefix;
         String filenameSuffix;
@@ -16,7 +20,7 @@ class AlpnRtUtil {
         }
         File tmpfile;
         try {
-            tmpfile = File.createTempFile(filenamePrefix, filenameSuffix);
+            tmpfile = File.createTempFile(filenamePrefix, filenameSuffix, dir);
         } catch (IOException e) {
             throw new RuntimeException("unable to create temp file for filename: " + filename, e);
         }
