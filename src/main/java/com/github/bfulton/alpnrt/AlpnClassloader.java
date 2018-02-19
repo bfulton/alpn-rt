@@ -12,9 +12,13 @@ public class AlpnClassloader extends ClassLoader {
     private final URLClassLoader alpnBootClassloader;
 
     public AlpnClassloader(ClassLoader parent) {
+        this(parent, null);
+    }
+
+    public AlpnClassloader(ClassLoader parent, File tempDir) {
         super(parent);
         alpnClassNames = new HashSet<String>();
-        alpnBootClassloader = initAlpnClassLoader();
+        alpnBootClassloader = initAlpnClassLoader(tempDir);
     }
 
     @Override
@@ -25,13 +29,13 @@ public class AlpnClassloader extends ClassLoader {
         return null;
     }
 
-    private URLClassLoader initAlpnClassLoader() {
+    private URLClassLoader initAlpnClassLoader(File tempDir) {
         URL alpnBootJarUrl = getParent().getResource(ALPN_BOOT_JAR_RESOURCE_PATH);
         if (alpnBootJarUrl == null) {
             throw new IllegalStateException("unable to locate alpn-boot JAR: " + ALPN_BOOT_JAR_RESOURCE_PATH);
         }
         try {
-            File tmpfile = AlpnRtUtil.writeTempFile(alpnBootJarUrl.openStream(), alpnBootJarUrl.getFile());
+            File tmpfile = AlpnRtUtil.writeTempFile(alpnBootJarUrl.openStream(), alpnBootJarUrl.getFile(), tempDir);
             tmpfile.deleteOnExit();
             JarFile jarFile = new JarFile(tmpfile);
             Enumeration<JarEntry> entries = jarFile.entries();
