@@ -1,8 +1,10 @@
 package com.github.bfulton.alpnrt;
 
+import java.io.File;
+
 public class AlpnRuntime {
-    public static void run(String runnableClassName) {
-        AlpnClassloader cl = new AlpnClassloader(Thread.currentThread().getContextClassLoader());
+    public static void run(String runnableClassName, File tempDir) {
+        AlpnClassloader cl = new AlpnClassloader(Thread.currentThread().getContextClassLoader(), tempDir);
         Thread.currentThread().setContextClassLoader(cl);
         Runnable runnable;
         try {
